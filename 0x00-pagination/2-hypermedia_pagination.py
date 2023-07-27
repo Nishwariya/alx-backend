@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Hypermedia pagination"""
+"""
+Contains class with methods to create simple pagination from csv data
+"""
 import csv
 from typing import List
 index_range = __import__('0-simple_helper_function').index_range
@@ -15,16 +17,14 @@ class Server:
 
     def dataset(self) -> List[List]:
         """
-        Reads csv file and returns a dataset.
+        Reads from csv file and returns the dataset.
         Returns:
             List[List]: The dataset.
         """
-
         if self.__dataset is None:
             with open(self.DATA_FILE) as f:
                 reader = csv.reader(f)
                 dataset = [row for row in reader]
-                
             self.__dataset = dataset[1:]
 
         return self.__dataset
@@ -32,7 +32,7 @@ class Server:
     @staticmethod
     def assert_positive_integer_type(value: int) -> None:
         """
-        Asserts a positive integer.
+        Asserts that the value is a positive integer.
         Args:
             value (int): The value to be asserted.
         """
@@ -47,13 +47,10 @@ class Server:
         Returns:
             List[List]: The page of the dataset.
         """
-
         self.assert_positive_integer_type(page)
         self.assert_positive_integer_type(page_size)
-
         dataset = self.dataset()
         start, end = index_range(page, page_size)
-
         try:
             data = dataset[start:end]
         except IndexError:
@@ -69,10 +66,8 @@ class Server:
         Returns:
             List[List]: The page of the dataset.
         """
-
         total_pages = len(self.dataset()) // page_size + 1
         data = self.get_page(page, page_size)
-
         info = {
             "page": page,
             "page_size": page_size if page_size <= len(data) else len(data),
